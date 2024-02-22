@@ -1,6 +1,9 @@
 package com.greglixandrao.screenmatch.modelos;
 
-public class Titulo {
+import com.google.gson.annotations.SerializedName;
+import com.greglixandrao.screenmatch.excecao.ErroDeConversaoException;
+
+public class Titulo implements Comparable<Titulo>{
     private String nome;
     private int anoDeLancamento;
     private int duracaoEmMinutos;
@@ -11,6 +14,15 @@ public class Titulo {
     public Titulo(String nome, int anoDeLancamento) {
         this.nome = nome;
         this.anoDeLancamento = anoDeLancamento;
+    }
+
+    public Titulo(TituloOMDb meuTituloOmdb) {
+        this.nome = meuTituloOmdb.title();
+        if (meuTituloOmdb.year().length() > 4) {
+            throw new ErroDeConversaoException("Valor do Ano está errado, maior que 4 caracteres");
+        }
+        this.anoDeLancamento = Integer.valueOf(meuTituloOmdb.year());
+        this.duracaoEmMinutos = Integer.valueOf(meuTituloOmdb.runtime().substring(0,2));
     }
 
     public void exibeFichaTecnica(){
@@ -62,5 +74,15 @@ public class Titulo {
 
     public void setAnoDeLancamento(int anoDeLancamento) {
         this.anoDeLancamento = anoDeLancamento;
+    }
+
+    @Override
+    public int compareTo(Titulo outroTitulo) {
+        return this.getNome().compareTo(outroTitulo.getNome());
+    }
+
+    @Override
+    public String toString() {
+        return "(Título = " + nome + ", Ano De Lançamento = " + anoDeLancamento + ", Duração = " + duracaoEmMinutos + ")";
     }
 }
